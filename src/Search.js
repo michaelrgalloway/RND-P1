@@ -15,13 +15,15 @@ class Search extends Component {
         this.setState({ books: [] });
         if (term) {
             BooksAPI.search(term, 20).then((results) => {
+                try{
                 let mybooks = this.props.books
                 let searchResult = results.map((searchbook)=>{
                     let book = mybooks.filter(b=>b.id === searchbook.id)[0]
                     if(book) return book;
                     return searchbook;
                 });
-                this.setState({ books: searchResult });
+                this.setState({ books: searchResult });}
+                catch(err){this.setState({ books: []});}
             })
         }
         
