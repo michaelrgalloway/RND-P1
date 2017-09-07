@@ -8,14 +8,20 @@ import BookShelf from './BookShelf'
 class Search extends Component {
 
     state = { books: [] }
-
+    
     updateBooks = (e) => {
+
         let term = e.target.value
         this.setState({ books: [] });
         if (term) {
             BooksAPI.search(term, 20).then((results) => {
-                
-                this.setState({ books: results });
+                let mybooks = this.props.books
+                let searchResult = results.map((searchbook)=>{
+                    let book = mybooks.filter(b=>b.id === searchbook.id)[0]
+                    if(book) return book;
+                    return searchbook;
+                });
+                this.setState({ books: searchResult });
             })
         }
         
@@ -23,7 +29,7 @@ class Search extends Component {
 
 
     render() {
-        const { onShelfChange } = this.props;
+        const onShelfChange  = this.props.onShelfChange ;
         const bookResults = this.state.books;
         return (
             <div className="search-books">
@@ -45,6 +51,7 @@ class Search extends Component {
     }
 }
 Search.propTypes = {
+    books: PropTypes.array.isRequired,
     onShelfChange: PropTypes.func.isRequired
 };
 
